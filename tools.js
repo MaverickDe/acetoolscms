@@ -1,3 +1,4 @@
+let init = (ccc) => {
 let dif = 10;
 let dif2 = 20;
 
@@ -9,7 +10,6 @@ expand = false;
 
 let selectedtag;
 
-let init = (ccc) => {
   ccc.onmousemove = (e) => {
     let extoolls = ccc.querySelector(".extools");
 
