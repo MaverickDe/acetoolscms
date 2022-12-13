@@ -1,18 +1,26 @@
 let init = (ccc) => {
-let dif = 10;
-let dif2 = 20;
- ccc.style.position = "relative";
-let currentTag;
+  let dif = 10;
+  let dif2 = 20;
+  ccc.style.position = "relative";
+  let currentTag;
 
-// let ccc = document.querySelector(".ccc");
+  // let ccc = document.querySelector(".ccc");
 
-expand = false;
+  expand = false;
 
-let selectedtag;
+  let selected = { selectedtag: false, selectedparent: false };
 
   ccc.onmousemove = (e) => {
     let extoolls = ccc.querySelector(".extools");
-
+    // console.log(this.selectedId);
+    if (this.selectedId) {
+      let o = document.getElementById(this.selectedId);
+      if (o != selected.selectedtag) {
+        selected.selectedtag = o != ccc && o;
+        selected.selectedparent = false;
+      }
+    }
+    // console.log(selected.selectedtag)
     let pa = e.currentTarget;
 
     let ch = e.toElement;
@@ -29,8 +37,8 @@ let selectedtag;
       if (ext(ch) && !expand) {
         let mm = Array.from(currentTag.querySelectorAll("*"));
 
-        if (selectedtag) {
-          let vv = Array.from(selectedtag.querySelectorAll("*"));
+        if (selected.selectedtag) {
+          let vv = Array.from(selected.selectedtag.querySelectorAll("*"));
 
           mm = mm.concat(vv);
         }
@@ -46,7 +54,13 @@ let selectedtag;
             let xadd = x_ + width;
             let yadd = y_ + height;
 
-            if (ofx >= x_ && ofx <= xadd && ofy >= y_ && ofy <= yadd) {
+            if (
+              ofx >= x_ &&
+              ofx <= xadd &&
+              ofy >= y_ &&
+              ofy <= yadd &&
+              acc != selected.selectedtag
+            ) {
               if (!tot) {
                 tot = [];
               }
@@ -84,14 +98,23 @@ let selectedtag;
            left:${x - dif}px;
            height:${height + dif2}px;
            width:${width + dif2}px;
-           z-index:40;
+           z-index:${
+             40 *
+             Array.from(ccc.querySelectorAll("*")).findIndex((e) => e == ch)
+           };
            
            `;
 
       over(style, ch, { x, y, cx, cy, height, width, ofx, ofy });
     };
 
-    imm(pa, ch, e);
+    if (selected.selectedtag && !selected.selectedparent) {
+      imm(pa, selected.selectedtag, e);
+    } else {
+      // console.log("kkgkgk")
+
+      imm(pa, ch, e);
+    }
   };
 
   let over = (style, tag, val, selectedid) => {
@@ -147,7 +170,6 @@ let selectedtag;
             ...val,
             parent,
           };
-          console.log(e, "lkskskskskskskks");
         };
       });
 
@@ -175,35 +197,47 @@ let selectedtag;
 
       ccc.appendChild(parent);
       parent.onmouseleave = (e) => {
-        if (!expand && selectedtag != tag) {
+        if (!expand && selected.selectedtag != tag) {
           ccc.removeChild(parent);
         }
       };
-
+      if (tag != selected.selectedtag) {
+        parent.classList.add("notselectedextools");
+        parent.classList.remove("selectedextools");
+      } else {
+        selected.selectedparent = parent;
+        parent.classList.remove("notselectedextools");
+        parent.classList.add("selectedextools");
+      }
       // tag.ondblclick = () => {};
 
       parent.ondblclick = (e) => {
         console.log("dbllll");
-        if (selectedtag == tag) {
-          selectedtag = false;
+        if (selected.selectedtag == tag) {
+          selected.selectedtag = false;
+          selected.selectedparent = false;
           parent.style.border = null;
           parent.classList.add("notselectedextools");
           parent.classList.remove("selectedextools");
+          this.selectedId = undefined;
         } else {
           console.log("jhjhj");
-          if (toolbar.ondblclick) {
-            tag.ondblclick();
-          }
+
+          console.log(tag.ondblclick);
+          // if (tag.ondblclick) {
+          //   // tag.ondblclick();
+          // }
           let extools = ccc.querySelector(
             "div[class='extools extools_ selectedextools']"
           );
           //    console.log(extools)
-          if (selectedtag != tag) {
+          if (selected.selectedtag != tag) {
             if (extools) {
               ccc.removeChild(extools);
             }
           }
-          selectedtag = tag;
+          selected.selectedtag = tag;
+          selected.selectedparent = parent;
           // parent.style.border = " 1px dashed grey";
           parent.classList.remove("notselectedextools");
           parent.classList.add("selectedextools");
@@ -213,8 +247,6 @@ let selectedtag;
 
     if (expand) {
       let c = expand.c;
-
-      console.log(c.getAttribute("data"));
 
       switch (c.getAttribute("data")) {
         case "c3":
