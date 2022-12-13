@@ -2,7 +2,7 @@ let init = (ccc) => {
   let dif = 10;
   let dif2 = 20;
   ccc.style.position = "relative";
-  let currentTaggggghgg;
+  let currentTag;
 
   // let ccc = document.querySelector(".ccc");
 
