@@ -1,14 +1,14 @@
 let init = (ccc) => {
-  let dif = 10;
-  let dif2 = 20;
+let dif = 10;
+let dif2 = 20;
 
-  let currentTag;
+let currentTag;
 
-  // let ccc = document.querySelector(".ccc");
+// let ccc = document.querySelector(".ccc");
 
-  expand = false;
+expand = false;
 
-  let selectedtag;
+let selectedtag;
 
   ccc.onmousemove = (e) => {
     let extoolls = ccc.querySelector(".extools");
@@ -204,7 +204,7 @@ let init = (ccc) => {
             }
           }
           selectedtag = tag;
-          parent.style.border = " 1px dashed grey";
+          // parent.style.border = " 1px dashed grey";
           parent.classList.remove("notselectedextools");
           parent.classList.add("selectedextools");
         }
