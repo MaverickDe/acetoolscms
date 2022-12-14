@@ -105,7 +105,7 @@ let init = (ccc) => {
            
            `;
 
-      over(style, ch, { x, y, cx, cy, height, width, ofx, ofy });
+      over(style, ch, { x, y, cx, cy, height, width, ofx, ofy }, pa);
     };
 
     if (selected.selectedtag && !selected.selectedparent) {
@@ -117,7 +117,7 @@ let init = (ccc) => {
     }
   };
 
-  let over = (style, tag, val, selectedid) => {
+  let over = (style, tag, val, pa) => {
     let extools = ccc.querySelector(
       "div[class='extools extools_ notselectedextools']"
     );
@@ -210,7 +210,16 @@ let init = (ccc) => {
         parent.classList.add("selectedextools");
       }
       // tag.ondblclick = () => {};
-
+      pa.ondblclick = (e) => {
+        if (e.target == e.currentTarget) {
+          selected.selectedtag = false;
+          selected.selectedparent = false;
+          parent.style.border = null;
+          parent.classList.add("notselectedextools");
+          parent.classList.remove("selectedextools");
+          this.selectedId = undefined;
+        }
+      };
       parent.ondblclick = (e) => {
         if (selected.selectedtag == tag) {
           selected.selectedtag = false;
@@ -439,10 +448,4 @@ let init = (ccc) => {
     expand = false;
   };
 };
-
-// init(ccc)
-
-
-
-// init(ccc)
 
