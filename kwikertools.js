@@ -440,4 +440,4 @@ let init = (ccc) => {
 };
 
 // init(ccc)
-init(document.getElementById("the_dev_dashboard"));
+
