@@ -392,6 +392,7 @@ let init = (ccc) => {
         let node = e.addedNodes;
         node.forEach((ee) => {
           observer.observe(ee, config);
+          observer_ccc.observe(ee, config_ccc);
         });
       }
     });
@@ -438,6 +439,10 @@ let init = (ccc) => {
     expand = false;
   };
 };
+
+// init(ccc)
+
+
 
 // init(ccc)
 
