@@ -1,36 +1,27 @@
-
-// CMS resize tools for kwickerhub.com
-
-// to implement v1 code refer to file name tools or kwickerv1
-
 let init = (ccc) => {
   let dif = 10;
   let dif2 = 20;
   ccc.style.position = "relative";
   let currentTag;
 
-  let selected = { selectedtag: false, selectedparent: false, e: false };
+  // let ccc = document.querySelector(".ccc");
 
-  let move = (e, ccc) => {
-    selected.e = e;
-    let pa = ccc || e.currentTarget;
-    let extoolls = pa.querySelector(".extools");
-    // console.log(this.selectedId);
-    if (this.selectedId) {
-      let o = document.getElementById(this.selectedId);
-      if (o != selected.selectedtag) {
-        selected.selectedtag = o != ccc && o;
-        selected.selectedparent = false;
-      }
-    }
+  expand = false;
+
+  let selectedtag;
+
+  ccc.onmousemove = (e) => {
+    let extoolls = ccc.querySelector(".extools");
+
+    let pa = e.currentTarget;
 
     let ch = e.toElement;
 
     let imm = (pa, ch, e) => {
-      let extools = pa.querySelectorAll("#extools");
+      let extools = ccc.querySelectorAll("#extools");
 
-      let ofx = e.clientX - pa.getBoundingClientRect().x;
-      let ofy = e.clientY - pa.getBoundingClientRect().y;
+      let ofx = e.clientX - e.currentTarget.getBoundingClientRect().x;
+      let ofy = e.clientY - e.currentTarget.getBoundingClientRect().y;
       let ext = (ch) => {
         return Array.from(extools).find((e) => e == ch);
       };
@@ -38,8 +29,8 @@ let init = (ccc) => {
       if (ext(ch) && !expand) {
         let mm = Array.from(currentTag.querySelectorAll("*"));
 
-        if (selected.selectedtag) {
-          let vv = Array.from(selected.selectedtag.querySelectorAll("*"));
+        if (selectedtag) {
+          let vv = Array.from(selectedtag.querySelectorAll("*"));
 
           mm = mm.concat(vv);
         }
@@ -47,21 +38,15 @@ let init = (ccc) => {
         ch = (() => {
           let red = mm.reduce((tot, acc) => {
             let x_ =
-              acc.getBoundingClientRect().x - pa.getBoundingClientRect().x;
+              acc.getBoundingClientRect().x - ccc.getBoundingClientRect().x;
             let y_ =
-              acc.getBoundingClientRect().y - pa.getBoundingClientRect().y;
+              acc.getBoundingClientRect().y - ccc.getBoundingClientRect().y;
             let height = acc.offsetHeight;
             let width = acc.offsetWidth;
             let xadd = x_ + width;
             let yadd = y_ + height;
 
-            if (
-              ofx >= x_ &&
-              ofx <= xadd &&
-              ofy >= y_ &&
-              ofy <= yadd &&
-              acc != selected.selectedtag
-            ) {
+            if (ofx >= x_ && ofx <= xadd && ofy >= y_ && ofy <= yadd) {
               if (!tot) {
                 tot = [];
               }
@@ -99,22 +84,14 @@ let init = (ccc) => {
            left:${x - dif}px;
            height:${height + dif2}px;
            width:${width + dif2}px;
-           z-index:${
-             40 * Array.from(pa.querySelectorAll("*")).findIndex((e) => e == ch)
-           };
+           z-index:40;
            
            `;
 
       over(style, ch, { x, y, cx, cy, height, width, ofx, ofy });
     };
 
-    if (selected.selectedtag && !selected.selectedparent) {
-      imm(pa, selected.selectedtag, e);
-    } else {
-      // console.log("kkgkgk")
-
-      imm(pa, ch, e);
-    }
+    imm(pa, ch, e);
   };
 
   let over = (style, tag, val, selectedid) => {
@@ -170,6 +147,7 @@ let init = (ccc) => {
             ...val,
             parent,
           };
+          console.log(e, "lkskskskskskskks");
         };
       });
 
@@ -197,46 +175,35 @@ let init = (ccc) => {
 
       ccc.appendChild(parent);
       parent.onmouseleave = (e) => {
-        if (!expand && selected.selectedtag != tag) {
+        if (!expand && selectedtag != tag) {
           ccc.removeChild(parent);
         }
       };
-      if (tag != selected.selectedtag) {
-        parent.classList.add("notselectedextools");
-        parent.classList.remove("selectedextools");
-      } else {
-        selected.selectedparent = parent;
-        parent.classList.remove("notselectedextools");
-        parent.classList.add("selectedextools");
-      }
+
       // tag.ondblclick = () => {};
 
       parent.ondblclick = (e) => {
-        if (selected.selectedtag == tag) {
-          selected.selectedtag = false;
-          selected.selectedparent = false;
+        console.log("dbllll");
+        if (selectedtag == tag) {
+          selectedtag = false;
           parent.style.border = null;
           parent.classList.add("notselectedextools");
           parent.classList.remove("selectedextools");
-          this.selectedId = undefined;
         } else {
-          this.selectedId = tag.getAttribute("id");
-          this.selectedElement = tag;
-
-          this.getElementStyleDetails(this.selectedId);
-          this.getElementAttrDetails(this.selectedId);
+          console.log("jhjhj");
+          if (toolbar.ondblclick) {
+            tag.ondblclick();
+          }
           let extools = ccc.querySelector(
             "div[class='extools extools_ selectedextools']"
           );
           //    console.log(extools)
-          if (selected.selectedtag != tag) {
+          if (selectedtag != tag) {
             if (extools) {
               ccc.removeChild(extools);
             }
           }
-          selected.selectedtag = tag;
-          selected.selectedparent = parent;
-
+          selectedtag = tag;
           // parent.style.border = " 1px dashed grey";
           parent.classList.remove("notselectedextools");
           parent.classList.add("selectedextools");
@@ -246,6 +213,8 @@ let init = (ccc) => {
 
     if (expand) {
       let c = expand.c;
+
+      console.log(c.getAttribute("data"));
 
       switch (c.getAttribute("data")) {
         case "c3":
@@ -386,58 +355,7 @@ let init = (ccc) => {
       }
     }
   };
-  let callback_ccc = (mutationList, observerr) => {
-    mutationList.forEach((e) => {
-      if (e.type == "childList") {
-        let node = e.addedNodes;
-        node.forEach((ee) => {
-          observer.observe(ee, config);
-        });
-      }
-    });
-  };
-  let callback = (mutationList, observerr) => {
-    mutationList.forEach((e) => {
-      if (e.type == "attributes" && !expand) {
-        let extools = ccc.querySelector(
-          "div[class='extools extools_ selectedextools']"
-        );
-        //    console.log(extools)
-
-        if (extools) {
-          ccc.removeChild(extools);
-        }
-        selected.selectedparent = false;
-        move(selected.e, ccc);
-
-        // let node = e.addedNodes
-
-        // node.forEach(ee => {
-        // })
-      }
-    });
-  };
-
-  let config_ccc = { childList: true };
-  let config = { attributes: true };
-
-  let observer_ccc = new MutationObserver(callback_ccc);
-  let observer = new MutationObserver(callback);
-
-  observer_ccc.observe(ccc, config_ccc);
-
-  // let ccc = document.querySelector(".ccc");
-
-  expand = false;
-
-  ccc.onmousemove = (e) => {
-    move(e);
-  };
-
   ccc.onmouseup = () => {
     expand = false;
   };
 };
-
-// init(ccc)
-init(document.getElementById("the_dev_dashboard"));
