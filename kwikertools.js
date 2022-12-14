@@ -3,6 +3,10 @@
 
 // to implement v1 code refer to file name tools or kwickerv1
 
+// princewillasotibe123@gmail.com
+//+2348160101820
+//Asotibe Princewill Onyemaechi
+
 let init = (ccc) => {
   let dif = 10;
   let dif2 = 20;
